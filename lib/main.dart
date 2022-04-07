@@ -20,7 +20,9 @@ class MyApp extends StatelessWidget {
     // 除半透明状态栏
     if (isAndroid) {
       // android 平台
-      SystemUiOverlayStyle _style = const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+      SystemUiOverlayStyle _style = const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      );
       SystemChrome.setSystemUIOverlayStyle(_style);
     }
     return MaterialApp(
