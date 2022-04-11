@@ -46,6 +46,7 @@ class SystemBarUtil private constructor(private val activity: Activity) {
         (window.decorView as ViewGroup).setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
             override fun onChildViewAdded(parent: View?, child: View?) {
                 if (child?.id == android.R.id.navigationBarBackground) {
+                    window.decorView.findViewById<View>(ID_NAV_BAR).bringToFront()
                     child.addOnLayoutChangeListener { _, left, top, right, bottom, _, _, _, _ ->
                         child.scaleX = 0f
                         val lp = child.layoutParams as FrameLayout.LayoutParams
@@ -54,7 +55,6 @@ class SystemBarUtil private constructor(private val activity: Activity) {
                         } else {
                             highLiveData.value = NavParam(lp.gravity, right - left)
                         }
-                        Log.i(TAG, "height = ${bottom - top}; width = ${right - left}")
                     }
                 } else if (child?.id == android.R.id.statusBarBackground) {
                     child.scaleX = 0f
@@ -65,22 +65,6 @@ class SystemBarUtil private constructor(private val activity: Activity) {
     }
 
     fun immersiveStatusBar() {
-        rootView.addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ ->
-            val lp = rootView.layoutParams as FrameLayout.LayoutParams
-            if (lp.topMargin > 0) {
-                lp.topMargin = 0
-                v.layoutParams = lp
-            }
-            if (rootView.paddingTop > 0) {
-                rootView.setPadding(0, 0, 0, rootView.paddingBottom)
-                val content = activity.findViewById<View>(android.R.id.content)
-                content.requestLayout()
-            }
-        }
-
-        val content = activity.findViewById<View>(android.R.id.content)
-        content.setPadding(0, 0, 0, content.paddingBottom)
-
         window.decorView.findViewById(R.id.status_bar_view) ?: View(window.context).apply {
             id = R.id.status_bar_view
             val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, getStatusBarHeight())
@@ -92,28 +76,6 @@ class SystemBarUtil private constructor(private val activity: Activity) {
     }
 
     fun immersiveNavigationBar() {
-        rootView.addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ ->
-            val lp = rootView.layoutParams as FrameLayout.LayoutParams
-            if (lp.bottomMargin > 0) {
-                lp.bottomMargin = 0
-            }
-            if (lp.leftMargin > 0) {
-                lp.leftMargin = 0
-            }
-            if (lp.rightMargin > 0) {
-                lp.rightMargin = 0
-            }
-            v.layoutParams = lp
-            if (rootView.paddingBottom > 0) {
-                rootView.setPadding(0, rootView.paddingTop, 0, 0)
-                val content = activity.findViewById<View>(android.R.id.content)
-                content.requestLayout()
-            }
-        }
-
-        val content = activity.findViewById<View>(android.R.id.content)
-        content.setPadding(0, content.paddingTop, 0, -1)
-
         window.decorView.findViewById(R.id.navigation_bar_view) ?: View(window.context).apply {
             id = R.id.navigation_bar_view
             val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, highLiveData.value?.high ?: 0)
@@ -195,6 +157,7 @@ class SystemBarUtil private constructor(private val activity: Activity) {
         } else {
             statusBarView?.setBackgroundColor(color)
         }
+        statusBarView?.bringToFront()
     }
 
     fun setNavigationBarColor(color: Int) {
@@ -204,6 +167,7 @@ class SystemBarUtil private constructor(private val activity: Activity) {
         } else {
             navigationBarView?.setBackgroundColor(color)
         }
+        navigationBarView?.bringToFront()
     }
 
     fun getStatusBarHeight(): Int {
