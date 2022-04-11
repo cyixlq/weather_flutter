@@ -16,59 +16,61 @@ class AddCityPage extends StatelessWidget {
       decoration: windowsBg,
       child: Scaffold(
         appBar: AppBar(title: const Text('添加城市')),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              TextField(
-                keyboardType: TextInputType.streetAddress,
-                controller: _cityController,
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-                decoration: const InputDecoration(
-                  labelText: '市/区名',
-                  hintText: '请在此处输入市/区名，例如：杭州',
-                  prefixIcon: Icon(Icons.location_city, color: Colors.white),
-                  hintStyle: TextStyle(color: Colors.white),
-                  labelStyle: TextStyle(color: Colors.white),
-                  floatingLabelStyle: TextStyle(color: Colors.blue),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white)
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                TextField(
+                  keyboardType: TextInputType.streetAddress,
+                  controller: _cityController,
+                  style: const TextStyle(
+                    color: Colors.white,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue)
-                  )
+                  decoration: const InputDecoration(
+                    labelText: '市/区名',
+                    hintText: '请在此处输入市/区名，例如：杭州',
+                    prefixIcon: Icon(Icons.location_city, color: Colors.white),
+                    hintStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Colors.white),
+                    floatingLabelStyle: TextStyle(color: Colors.blue),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue)
+                    )
+                  ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 15),
-                child: MaterialButton(
-                  child: const Text('保存', style: TextStyle(color: Colors.white)),
-                  minWidth: double.infinity,
-                  height: 50,
-                  color: Colors.blue,
-                  onPressed: () async {
-                    final city = _cityController.text;
-                    if (city.isEmpty) {
-                      showToast(context, '请输入正确的市/区名称');
-                      return;
-                    }
-                    final list = await getCityList();
-                    if (list.contains(city)) {
-                      showToast(context, '市/区已经添加过了');
-                      return;
-                    }
-                    final isSuccess = await saveCity(city);
-                    if (isSuccess) {
-                      NavigatorUtil.pop(context, city);
-                    } else {
-                      showToast(context, '市/区保存失败');
-                    }
-                  },
-                ),
-              )
-            ],
+                Container(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: MaterialButton(
+                    child: const Text('保存', style: TextStyle(color: Colors.white)),
+                    minWidth: double.infinity,
+                    height: 50,
+                    color: Colors.blue,
+                    onPressed: () async {
+                      final city = _cityController.text;
+                      if (city.isEmpty) {
+                        showToast(context, '请输入正确的市/区名称');
+                        return;
+                      }
+                      final list = await getCityList();
+                      if (list.contains(city)) {
+                        showToast(context, '市/区已经添加过了');
+                        return;
+                      }
+                      final isSuccess = await saveCity(city);
+                      if (isSuccess) {
+                        NavigatorUtil.pop(context, city);
+                      } else {
+                        showToast(context, '市/区保存失败');
+                      }
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
