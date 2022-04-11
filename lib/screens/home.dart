@@ -5,6 +5,7 @@ import 'package:weather_flutter/common/navigator_util.dart';
 import 'package:weather_flutter/common/package_info.dart';
 import 'package:weather_flutter/common/toast.dart';
 import 'package:weather_flutter/common/weather_icons.dart';
+import 'package:weather_flutter/component/about_dialog.dart';
 import 'package:weather_flutter/component/loading_dialog.dart';
 import 'package:weather_flutter/component/weather_background.dart';
 import 'package:weather_flutter/component/weather_content.dart';
@@ -63,43 +64,46 @@ class _MainPageState extends State<MainPage> {
               weight: _getWeight(_weather?.forecast[0].type),
               type: _getType(_weather?.forecast[0].type),
             ),
-            SafeArea(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(getWeatherIcon(_weather?.forecast[0].type),
-                                color: Colors.white, size: 120),
-                            Text(
-                              '${_weather?.wendu ?? '??'}℃',
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 60),
-                            ),
-                          ],
-                        ),
+            SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 20 + MediaQuery.of(context).padding.left,
+                  right: 20 + MediaQuery.of(context).padding.right,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, bottom: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(getWeatherIcon(_weather?.forecast[0].type),
+                              color: Colors.white, size: 120),
+                          Text(
+                            '${_weather?.wendu ?? '??'}℃',
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 60),
+                          ),
+                        ],
                       ),
-                      Text(
-                        _weather?.forecast[0].date ?? '',
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      WeatherContent(
-                        _weather?.forecast[0].low,
-                        _weather?.forecast[0].high,
-                        _weather?.forecast[0].fengli,
-                        _weather?.forecast[0].fengxiang,
-                      ),
-                      ..._buildForecastItems(),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      _weather?.forecast[0].date ?? '',
+                      style: const TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    WeatherContent(
+                      _weather?.forecast[0].low,
+                      _weather?.forecast[0].high,
+                      _weather?.forecast[0].fengli,
+                      _weather?.forecast[0].fengxiang,
+                    ),
+                    ..._buildForecastItems(),
+                    SizedBox(
+                      height: MediaQuery.of(context).padding.bottom,
+                    )
+                  ],
                 ),
               ),
             ),
@@ -152,24 +156,24 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _getWeather({bool isRefresh = false}) {
-    getWeather(_city, isRefresh: isRefresh)
-        .then((value) => setState(() {
-              _weather = value;
-            }))
-        .catchError((e) {
-      showToast(context, '天气数据获取错误，或许是不支持的市/区名');
-      MyLog.e(MainPage.tag, '天气数据获取错误: ${e.toString()}');
-      setState(() {
-        _weather = null;
-      });
-    }).whenComplete(() {
-      if (_isLoadingShow) {
-        Future.delayed(const Duration(milliseconds: 1500), () {
-          Navigator.of(context).pop();
-          _isLoadingShow = false;
+    getWeather(_city, isRefresh: isRefresh).then(
+        (value) => setState(() {
+          _weather = value;
+        }
+      )).catchError((e) {
+        showToast(context, '天气数据获取错误，或许是不支持的市/区名');
+        MyLog.e(MainPage.tag, '天气数据获取错误: ${e.toString()}');
+        setState(() {
+          _weather = null;
         });
-      }
-    });
+      }).whenComplete(() {
+        if (_isLoadingShow) {
+          Future.delayed(const Duration(milliseconds: 1500), () {
+            Navigator.of(context).pop();
+            _isLoadingShow = false;
+          });
+        }
+      });
   }
 
   _showLoading() {
@@ -209,18 +213,51 @@ class _MainPageState extends State<MainPage> {
   _showAboutDialog() async {
     final String appName = await PackageInfo.appName();
     final String versionName = await PackageInfo.versionName();
-    showAboutDialog(
-        context: context,
-        applicationName: appName,
-        applicationVersion: versionName,
-        applicationIcon: Image.asset(
-          'assets/images/icon_launch.png',
-          width: 50,
-          height: 50,
-        ),
-        children: [
-          const Text('作者：cyixlq'),
-          const Text('cy出品，必属精品！'),
-        ]);
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return MyAboutDialog(
+          applicationName: appName,
+          applicationVersion: versionName,
+          applicationIcon: Image.asset(
+            'assets/images/icon_launch.png',
+            width: 50,
+            height: 50,
+          ),
+          applicationLegalese: 'copyright © Cy Company',
+          children: [
+            Container(
+              height: 40,
+              color: Colors.red,
+              margin: const EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.only(left: 10),
+              alignment: Alignment.centerLeft,
+              child: const Text(
+                '作者：cyixlq',
+                style: TextStyle(
+                    color: Colors.white
+                ),
+              ),
+            ),
+            Container(
+                height: 40,
+                color: Colors.green,
+                padding: const EdgeInsets.only(left: 10),
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  'CY出品，必属精品！',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                )
+            ),
+            Container(
+              height: 40,
+              color: Colors.blue,
+            ),
+          ],
+        );
+      },
+    );
   }
 }

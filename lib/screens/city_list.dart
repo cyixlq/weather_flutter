@@ -43,13 +43,15 @@ class _CityListPageState extends State<CityListPage> {
             }, icon: const Icon(Icons.add))
           ],
         ),
-        body: AnimatedList(
-          key: _listKey,
-          initialItemCount: 0,
-          physics: const BouncingScrollPhysics(),
-          itemBuilder: (BuildContext context, int index, Animation<double> animation) {
-            return _buildCityItem(index, animation);
-          },
+        body: SafeArea(
+          child: AnimatedList(
+            key: _listKey,
+            initialItemCount: 0,
+            physics: const BouncingScrollPhysics(),
+            itemBuilder: (BuildContext context, int index, Animation<double> animation) {
+              return _buildCityItem(index, animation);
+            },
+          ),
         )
       ),
     );

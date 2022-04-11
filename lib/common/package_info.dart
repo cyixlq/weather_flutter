@@ -4,7 +4,9 @@ import 'package:weather_flutter/common/config.dart';
 
 class PackageInfo {
 
-  static const MethodChannel _channel = MethodChannel('top.cyixle.weather.weather_flutter.plugin/package_info_plugin');
+  PackageInfo._();
+
+  static const MethodChannel _channel = MethodChannel('top.cyixlq.weather.weather_flutter.plugin/package_info_plugin');
 
   static Future<int> versionCode() async {
     if (isAndroid) {

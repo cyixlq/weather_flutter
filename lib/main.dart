@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:weather_flutter/common/config.dart';
 import 'package:weather_flutter/common/my_log.dart';
+import 'package:weather_flutter/common/my_navigator_observer.dart';
 import 'package:weather_flutter/models/api/net_client.dart';
 import 'package:weather_flutter/screens/home.dart';
 
@@ -17,14 +16,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 除半透明状态栏
-    if (isAndroid) {
-      // android 平台
-      SystemUiOverlayStyle _style = const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-      );
-      SystemChrome.setSystemUIOverlayStyle(_style);
-    }
     return MaterialApp(
       title: '天气',
       theme: ThemeData(
@@ -37,6 +28,9 @@ class MyApp extends StatelessWidget {
         )
       ),
       home: const MainPage(),
+      navigatorObservers: [
+        MyNavigatorObserver()
+      ],
     );
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:weather_flutter/common/weather_icons.dart';
 
-
 final bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
 
 const Map<String, IconData> weatherIconMap = {
@@ -38,11 +37,11 @@ final BoxDecoration windowsBg = BoxDecoration(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       stops: const [0.1, 1],
-      colors: _getWindowBgColors()
+      colors: getWindowBgColors()
     )
 );
 
-List<Color> _getWindowBgColors() {
+List<Color> getWindowBgColors() {
   final hour = DateTime.now().hour;
   if (hour >= 7 && hour <= 11) {
     return morningColors;
