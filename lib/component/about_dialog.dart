@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:weather_flutter/common/config.dart';
 import 'package:weather_flutter/common/navigator_util.dart';
 
 class MyAboutDialog extends StatelessWidget {
@@ -58,11 +59,15 @@ class MyAboutDialog extends StatelessWidget {
             NavigatorUtil.pop(context);
             NavigatorUtil.push(
               context,
-              LicensePage(
-                applicationName: applicationName,
-                applicationVersion: applicationVersion,
-                applicationIcon: applicationIcon,
-                applicationLegalese: applicationLegalese,
+              Container(
+                decoration: windowsBg,
+                child:
+                LicensePage(
+                  applicationName: applicationName,
+                  applicationVersion: applicationVersion,
+                  applicationIcon: applicationIcon,
+                  applicationLegalese: applicationLegalese,
+                ),
               ),
               settings: const RouteSettings(
                 name: 'license'

@@ -91,8 +91,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                     Text(
                       _weather?.forecast[0].date ?? '',
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 20),
+                      style: const TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     WeatherContent(
                       _weather?.forecast[0].low,
