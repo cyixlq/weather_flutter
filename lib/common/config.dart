@@ -37,11 +37,11 @@ final BoxDecoration windowsBg = BoxDecoration(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       stops: const [0.1, 1],
-      colors: _getWindowBgColors()
+      colors: getWindowBgColors()
     )
 );
 
-List<Color> _getWindowBgColors() {
+List<Color> getWindowBgColors() {
   final hour = DateTime.now().hour;
   if (hour >= 7 && hour <= 11) {
     return morningColors;

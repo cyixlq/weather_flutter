@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_flutter/common/config.dart';
 import 'package:weather_flutter/common/my_log.dart';
 import 'package:weather_flutter/common/system_bar_util.dart';
 
@@ -9,7 +10,7 @@ class MyNavigatorObserver extends NavigatorObserver {
     final isLicensePage = route.settings.name == 'license';
     MyLog.i('CyRoute', 'didPush: ${route.toString()}; isLicensePage: $isLicensePage');
     if (isLicensePage) {
-      SystemBarUtil.setNavigationBarColor(0xff000000);
+      SystemBarUtil.setNavigationBarColor(getWindowBgColors()[1].value);
     }
   }
 

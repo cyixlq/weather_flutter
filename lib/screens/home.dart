@@ -67,7 +67,10 @@ class _MainPageState extends State<MainPage> {
             SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
+                padding: EdgeInsets.only(
+                  left: 20 + MediaQuery.of(context).padding.left,
+                  right: 20 + MediaQuery.of(context).padding.right,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -88,8 +91,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                     Text(
                       _weather?.forecast[0].date ?? '',
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 20),
+                      style: const TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     WeatherContent(
                       _weather?.forecast[0].low,
@@ -98,6 +100,9 @@ class _MainPageState extends State<MainPage> {
                       _weather?.forecast[0].fengxiang,
                     ),
                     ..._buildForecastItems(),
+                    SizedBox(
+                      height: MediaQuery.of(context).padding.bottom,
+                    )
                   ],
                 ),
               ),
