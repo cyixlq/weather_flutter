@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:weather_flutter/common/weather_icons.dart';
 
-
 final bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
 
 const Map<String, IconData> weatherIconMap = {

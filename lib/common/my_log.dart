@@ -6,6 +6,8 @@ import 'package:weather_flutter/common/config.dart';
 
 class MyLog {
 
+  MyLog._();
+
   static bool isDebug = true;
   static const JsonEncoder _encoder = JsonEncoder.withIndent('  ');
 

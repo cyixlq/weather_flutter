@@ -11,7 +11,7 @@ class PackageInfoPlugin(private var context: Context?) : FlutterPlugin {
     private lateinit var channel : MethodChannel
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(binding.binaryMessenger, "top.cyixle.weather.weather_flutter.plugin/package_info_plugin")
+        channel = MethodChannel(binding.binaryMessenger, "top.cyixlq.weather.weather_flutter.plugin/package_info_plugin")
         channel.setMethodCallHandler { call, result ->
             when(call.method) {
                 "versionCode" -> result.success(BuildConfig.VERSION_CODE)
@@ -23,7 +23,7 @@ class PackageInfoPlugin(private var context: Context?) : FlutterPlugin {
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
         context = null
+        channel.setMethodCallHandler(null)
     }
 }
