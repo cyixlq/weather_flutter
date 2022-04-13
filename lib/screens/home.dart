@@ -36,6 +36,11 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final padding = EdgeInsets.only(
+      left: MediaQuery.of(context).padding.left,
+      right: MediaQuery.of(context).padding.right,
+      bottom: MediaQuery.of(context).padding.bottom,
+    );
     return Container(
       decoration: windowsBg,
       child: Scaffold(
@@ -68,8 +73,8 @@ class _MainPageState extends State<MainPage> {
               physics: const BouncingScrollPhysics(),
               child: Padding(
                 padding: EdgeInsets.only(
-                  left: 20 + MediaQuery.of(context).padding.left,
-                  right: 20 + MediaQuery.of(context).padding.right,
+                  left: 20 + padding.left,
+                  right: 20 + padding.right,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +106,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                     ..._buildForecastItems(),
                     SizedBox(
-                      height: MediaQuery.of(context).padding.bottom,
+                      height: padding.bottom,
                     )
                   ],
                 ),
