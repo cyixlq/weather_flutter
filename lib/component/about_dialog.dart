@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:weather_flutter/common/config.dart';
 import 'package:weather_flutter/common/navigator_util.dart';
+import 'package:weather_flutter/screens/my_license_page.dart';
 
 class MyAboutDialog extends StatelessWidget {
 
@@ -57,22 +57,12 @@ class MyAboutDialog extends StatelessWidget {
           child: const Text('查看许可证'),
           onPressed: () {
             NavigatorUtil.pop(context);
-            NavigatorUtil.push(
-              context,
-              Container(
-                decoration: windowsBg,
-                child:
-                LicensePage(
-                  applicationName: applicationName,
-                  applicationVersion: applicationVersion,
-                  applicationIcon: applicationIcon,
-                  applicationLegalese: applicationLegalese,
-                ),
-              ),
-              settings: const RouteSettings(
-                name: 'license'
-              )
-            );
+            NavigatorUtil.push(context, MyLicensePage(
+              applicationName: applicationName,
+              applicationVersion: applicationVersion,
+              applicationIcon: applicationIcon,
+              applicationLegalese: applicationLegalese,
+            ));
           },
         ),
         TextButton(
