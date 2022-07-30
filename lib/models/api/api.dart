@@ -7,7 +7,6 @@ import 'package:weather_flutter/models/bean/base_response.dart';
 import 'package:weather_flutter/models/bean/weather.dart';
 import 'package:weather_flutter/models/api/net_client.dart';
 
-const codeOk = 1000;
 const _tag = 'API_TAG';
 
 /// *********** 天气API *************/
@@ -60,10 +59,10 @@ Future<Weather?> _getWeatherLocal(String city) async {
 }
 
 T parse<T>(BaseResponse<T> baseResponse) {
-  if (baseResponse.status == codeOk) {
+  if (baseResponse.success == true) {
     return baseResponse.data;
   }
-  throw HttpError(baseResponse.status, baseResponse.desc);
+  throw HttpError(500, "服务端异常");
 }
 
 /// *********** 城市API *************/

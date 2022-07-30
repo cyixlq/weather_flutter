@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:weather_flutter/common/config.dart';
@@ -45,6 +46,7 @@ class _WindPointerPainter extends CustomPainter {
   final Paint _paint;
   final double currentAngle;
   final String dir;
+  Picture? _picture;
   final textPaint = TextPainter(textDirection: TextDirection.ltr);
   final textStyle = const TextStyle(
     color: Colors.white,
@@ -59,10 +61,6 @@ class _WindPointerPainter extends CustomPainter {
     final radius = min(size.width, size.height) / 2;
     final double halfWidth = size.width / 2;
     final double halfHeight = size.height / 2;
-    _paint..color = const Color(0x22FFFFFF)
-      ..strokeWidth = 0
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(halfWidth, halfHeight), 30, _paint);
     final dirTextSpan = TextSpan(
       text: dir,
       style: const TextStyle(color: Colors.white, fontSize: 12),
@@ -75,12 +73,22 @@ class _WindPointerPainter extends CustomPainter {
   }
 
   _drawDial(Canvas canvas, double halfWidth, double halfHeight, double radius) {
+    if (_picture != null) {
+      canvas.drawPicture(_picture!);
+      return;
+    }
+    PictureRecorder recorder = PictureRecorder();
+    Canvas picCanvas = Canvas(recorder);
+    picCanvas.save();
+    _paint..color = const Color(0x22FFFFFF)
+      ..strokeWidth = 0
+      ..style = PaintingStyle.fill;
+    picCanvas.drawCircle(Offset(halfWidth, halfHeight), 30, _paint);
     _paint..style = PaintingStyle.fill..color = Colors.white;
-    canvas.save();
     final texts = ['北', '东', '南', '西'];
     int index = 0;
     for (int i = 1; i <= 168; i++) {
-      canvas.drawRect(
+      picCanvas.drawRect(
           Rect.fromLTWH(
             halfWidth - 0.5,
             0,
@@ -98,14 +106,17 @@ class _WindPointerPainter extends CustomPainter {
           minWidth: 0,
           maxWidth: 10,
         );
-        textPaint.paint(canvas, Offset(halfWidth - 5, 7));
+        textPaint.paint(picCanvas, Offset(halfWidth - 5, 7));
       }
-      canvasCenterRotation(canvas, halfWidth, halfHeight, 2.143);
+      canvasCenterRotation(picCanvas, halfWidth, halfHeight, 2.143);
     }
-    canvas.restore();
+    picCanvas.restore();
+    _picture = recorder.endRecording();
+    canvas.drawPicture(_picture!);
   }
 
   _drawPointer(Canvas canvas, double halfWidth, double halfHeight, double radius) {
+    _paint..style = PaintingStyle.fill..color = Colors.white;
     canvas.save();
     canvasCenterRotation(canvas, halfWidth, halfHeight, currentAngle);
     final Path path = Path()
