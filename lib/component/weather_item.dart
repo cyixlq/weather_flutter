@@ -14,7 +14,7 @@ class WeatherItem extends StatelessWidget {
     return Padding(
           padding: const EdgeInsets.only(top: 20),
           child: Row(children: [
-            Text(forecast.date,
+            Text(forecast.week,
                 style: const TextStyle(color: Colors.white)),
             const Flexible(
                 child: Divider(color: Colors.transparent), flex: 1),

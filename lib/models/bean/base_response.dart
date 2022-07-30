@@ -1,16 +1,14 @@
 class BaseResponse<T> {
-  final int status;
-  final String desc;
+  final bool success;
   final T data;
 
-  BaseResponse(this.status, this.desc, this.data);
+  BaseResponse(this.success, this.data);
 
   BaseResponse.fromJson(Map<String, dynamic> json,
       T Function(Map<String, dynamic> json) fromJsonT)
-      : status = json['status'],
-        desc = json['desc'],
+      : success = json['success'],
         data = fromJsonT(json['data']);
 
   Map<String, dynamic> toJson(Object Function(T value) toJsonT) =>
-      {'status': status, 'desc': desc, 'data': toJsonT(data)};
+      {'success': success, 'data': toJsonT(data)};
 }

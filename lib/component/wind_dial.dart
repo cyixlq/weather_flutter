@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:weather_flutter/common/config.dart';
@@ -47,6 +48,7 @@ class _WindDialPainter extends CustomPainter {
   final Paint _paint;
   final String levelText;
   final textPaint = TextPainter(textDirection: TextDirection.ltr);
+  Picture? _picture;
 
   _WindDialPainter(this.currentAngel, this._paint, this.levelText);
 
@@ -55,25 +57,6 @@ class _WindDialPainter extends CustomPainter {
     final double halfWidth = size.width / 2;
     final double halfHeight = size.height / 2;
     final radius = min(halfWidth, halfHeight);
-    _paint..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round;
-    ///绘制圆盘
-    canvas.drawArc(
-        Rect.fromCircle(center: Offset(halfWidth, halfHeight), radius: radius),
-        -240 * (pi / 180),
-        300 * (pi / 180),
-        false,
-        _paint
-    );
-    _paint.strokeWidth = 1;
-    canvas.drawArc(
-        Rect.fromCircle(center: Offset(halfWidth, halfHeight), radius: radius - 5),
-        -240 * (pi / 180),
-        300 * (pi / 180),
-        false,
-        _paint
-    );
     ///绘制中间文字
     final textLevelSpan = TextSpan(
       text: levelText,
@@ -85,26 +68,8 @@ class _WindDialPainter extends CustomPainter {
     textPaint.text = textLevelSpan;
     textPaint.layout();
     textPaint.paint(canvas, Offset(halfWidth - textPaint.width / 2, halfHeight - textPaint.height / 2));
-    ///绘制两头最低和最高级数文字
-    const tagTextStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 11,
-    );
-    const minTextSpan = TextSpan(
-      text: '0级',
-      style: tagTextStyle
-    );
-    final capHeight = cos(40 / 180 * pi) * radius;
-    textPaint.text = minTextSpan;
-    textPaint.layout();
-    textPaint.paint(canvas, Offset(halfWidth - radius, halfHeight + capHeight));
-    const maxTestSpan = TextSpan(
-      text: '12级',
-      style: tagTextStyle
-    );
-    textPaint.text = maxTestSpan;
-    textPaint.layout();
-    textPaint.paint(canvas, Offset(halfWidth + radius - textPaint.width, halfHeight + capHeight));
+    ///绘制表盘背景
+    _drawBackground(canvas, halfWidth, halfHeight, radius);
     ///绘制箭头
     canvas.save();
     canvasCenterRotation(canvas, halfWidth, halfHeight, currentAngel);
@@ -115,6 +80,56 @@ class _WindDialPainter extends CustomPainter {
       ..close();
     canvas.drawPath(path, _paint);
     canvas.restore();
+  }
+
+  void _drawBackground(Canvas canvas, double halfWidth, double halfHeight, double radius) {
+    if (_picture != null) {
+      canvas.drawPicture(_picture!);
+      return;
+    }
+    PictureRecorder recorder = PictureRecorder();
+    Canvas picCanvas = Canvas(recorder);
+    _paint..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round;
+    ///绘制圆盘
+    picCanvas.drawArc(
+        Rect.fromCircle(center: Offset(halfWidth, halfHeight), radius: radius),
+        -240 * (pi / 180),
+        300 * (pi / 180),
+        false,
+        _paint
+    );
+    _paint.strokeWidth = 1;
+    picCanvas.drawArc(
+        Rect.fromCircle(center: Offset(halfWidth, halfHeight), radius: radius - 5),
+        -240 * (pi / 180),
+        300 * (pi / 180),
+        false,
+        _paint
+    );
+    ///绘制两头最低和最高级数文字
+    const tagTextStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 11,
+    );
+    const minTextSpan = TextSpan(
+        text: '0级',
+        style: tagTextStyle
+    );
+    final capHeight = cos(40 / 180 * pi) * radius;
+    textPaint.text = minTextSpan;
+    textPaint.layout();
+    textPaint.paint(picCanvas, Offset(halfWidth - radius, halfHeight + capHeight));
+    const maxTestSpan = TextSpan(
+        text: '12级',
+        style: tagTextStyle
+    );
+    textPaint.text = maxTestSpan;
+    textPaint.layout();
+    textPaint.paint(picCanvas, Offset(halfWidth + radius - textPaint.width, halfHeight + capHeight));
+    _picture = recorder.endRecording();
+    canvas.drawPicture(_picture!);
   }
 
   @override
