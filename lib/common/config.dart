@@ -18,7 +18,8 @@ const Map<String, IconData> weatherIconMap = {
   '小雪': WeatherIcons.xiaoXue,
   '中雪': WeatherIcons.zhongXue,
   '大雪': WeatherIcons.daXue,
-  '雨夹雪': WeatherIcons.yuJiaXue
+  '雨夹雪': WeatherIcons.yuJiaXue,
+  '阵雨': WeatherIcons.zhenyu
 };
 
 IconData getWeatherIcon(String? type) {
