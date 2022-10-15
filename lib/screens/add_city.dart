@@ -28,8 +28,8 @@ class AddCityPage extends StatelessWidget {
                     color: Colors.white,
                   ),
                   decoration: const InputDecoration(
-                    labelText: '市/区名',
-                    hintText: '请在此处输入市/区名，例如：杭州',
+                    labelText: '城市名',
+                    hintText: '请在此处输入城市名，例如：杭州',
                     prefixIcon: Icon(Icons.location_city, color: Colors.white),
                     hintStyle: TextStyle(color: Colors.white),
                     labelStyle: TextStyle(color: Colors.white),
