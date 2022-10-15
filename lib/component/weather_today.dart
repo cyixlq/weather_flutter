@@ -19,15 +19,16 @@ class WeatherToday extends StatelessWidget {
           padding: const EdgeInsets.only(top: 20, bottom: 20),
           child: SizedBox(
             width: double.infinity,
-            child: Column(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(getWeatherIcon(_forecast?.type), color: Colors.white, size: 120),
+                Icon(
+                    getWeatherIcon(_forecast?.type),
+                    color: Colors.white, size: 120
+                ),
                 Text(
                   _forecast?.type ?? '',
-                  style: const TextStyle(
-                      color: Colors.white, fontSize: 20),
+                  style: const TextStyle(color: Colors.white, fontSize: 30),
                 ),
               ],
             ),
@@ -38,5 +39,4 @@ class WeatherToday extends StatelessWidget {
       ]
     );
   }
-
 }

@@ -9,6 +9,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import top.cyixlq.weather.weather_flutter.plugin.LogPlugin
 import top.cyixlq.weather.weather_flutter.plugin.PackageInfoPlugin
+import top.cyixlq.weather.weather_flutter.plugin.UrlLauncherPlugin
 
 class MainActivity: FlutterActivity() {
 
@@ -32,6 +33,7 @@ class MainActivity: FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
         addPlugin(flutterEngine, LogPlugin())
         addPlugin(flutterEngine, PackageInfoPlugin(this))
+        addPlugin(flutterEngine, UrlLauncherPlugin(this))
     }
 
     private fun addPlugin(engine: FlutterEngine, plugin: FlutterPlugin) {

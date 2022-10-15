@@ -4,6 +4,7 @@ import 'package:weather_flutter/common/my_log.dart';
 import 'package:weather_flutter/common/navigator_util.dart';
 import 'package:weather_flutter/common/package_info.dart';
 import 'package:weather_flutter/common/toast.dart';
+import 'package:weather_flutter/common/url_launcher.dart';
 import 'package:weather_flutter/common/weather_icons.dart';
 import 'package:weather_flutter/component/about_dialog.dart';
 import 'package:weather_flutter/component/loading_dialog.dart';
@@ -234,7 +235,22 @@ class _MainPageState extends State<MainPage> {
             Container(
               height: 40,
               color: Colors.blue,
-            ),
+              padding: const EdgeInsets.only(left: 10),
+              alignment: Alignment.centerLeft,
+              child: GestureDetector(
+                onTap: () {
+                  UrlLauncher.launch('https://github.com/cyixlq/weather_flutter/releases');
+                },
+                child: const Text(
+                  '点我前往官方下载页面',
+                  style: TextStyle(
+                      color: Colors.white,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.white
+                  ),
+                ),
+              ),
+            )
           ],
         );
       },
