@@ -8,10 +8,11 @@ import 'package:weather_flutter/common/weather_icons.dart';
 import 'package:weather_flutter/component/about_dialog.dart';
 import 'package:weather_flutter/component/loading_dialog.dart';
 import 'package:weather_flutter/component/weather_background.dart';
-import 'package:weather_flutter/component/weather_content.dart';
 import 'package:weather_flutter/component/weather_item.dart';
+import 'package:weather_flutter/component/weather_today.dart';
 import 'package:weather_flutter/models/api/api.dart';
-import 'package:weather_flutter/models/bean/weather.dart';
+import 'package:weather_flutter/models/api/http_error.dart';
+import 'package:weather_flutter/models/bean/forecast.dart';
 import 'package:weather_flutter/screens/city_list.dart';
 
 class MainPage extends StatefulWidget {
@@ -25,7 +26,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   String _city = '';
-  Weather? _weather;
+  List<Forecast>? _weather;
   bool _isLoadingShow = false;
 
   @override
@@ -66,75 +67,43 @@ class _MainPageState extends State<MainPage> {
             WeatherBackground(
               width: double.infinity,
               height: double.infinity,
-              weight: _getWeight(_weather?.forecast[0].type),
-              type: _getType(_weather?.forecast[0].type),
+              weight: _getWeight(_weather?[1].type),
+              type: _getType(_weather?[1].type),
             ),
-            SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: 20 + padding.left,
-                  right: 20 + padding.right,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20, bottom: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(getWeatherIcon(_weather?.forecast[0].type),
-                              color: Colors.white, size: 120),
-                          Text(
-                            '${_weather?.wendu ?? '??'}℃',
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 60),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      _weather?.forecast[0].date ?? '',
-                      style: const TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    WeatherContent(
-                      _weather?.forecast[0].low,
-                      _weather?.forecast[0].high,
-                      _weather?.forecast[0].fengli,
-                      _weather?.forecast[0].fengxiang,
-                    ),
-                    ..._buildForecastItems(),
-                    SizedBox(
-                      height: padding.bottom,
-                    )
-                  ],
-                ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: 20 + padding.left,
+                right: 20 + padding.right,
               ),
-            ),
+              child: createListView(padding.bottom),
+            )
           ],
         ),
       ),
     );
   }
 
-  List<Widget> _buildForecastItems() {
-    if (_weather == null) {
-      return [];
-    }
-    return _weather!.forecast
-        .skip(1)
-        .map((forecast) => Column(children: [
-              WeatherItem(
-                forecast: forecast,
-              ),
-              const Divider(color: Colors.white, thickness: 1)
-            ]))
-        .toList();
+  ListView createListView(double paddingBottom) {
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      itemCount: _weather?.length ?? 1,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return WeatherToday(_weather?[index + 1]);
+        } else if (index == _weather!.length - 1) {
+          return SizedBox(width: double.infinity, height: paddingBottom,);
+        }
+        return Column(children: [
+          WeatherItem(
+            forecast: _weather![index + 1],
+          ),
+          const Divider(color: Colors.white, thickness: 1)
+        ]);
+      },
+    );
   }
 
   int _getWeight(String? typeStr) {
-    final typeStr = _weather?.forecast[0].type;
     int weight = -1;
     if (typeStr != null) {
       if (typeStr.contains('小')) {
@@ -166,8 +135,14 @@ class _MainPageState extends State<MainPage> {
           _weather = value;
         }
       )).catchError((e) {
-        showToast(context, '天气数据获取错误，或许是不支持的市/区名');
-        MyLog.e(MainPage.tag, '天气数据获取错误: ${e.toString()}');
+        final String msg;
+        if (e is HttpError) {
+          msg = e.msg;
+        } else {
+          msg = '未知异常: ${e.toString()}';
+        }
+        showToast(context, msg);
+        MyLog.e(MainPage.tag, '天气数据获取错误: $msg');
         setState(() {
           _weather = null;
         });
