@@ -30,13 +30,17 @@ Future<List<Forecast>> _getWeatherNet(String city, int now) async {
     'city': city,
     'type': 'week'
   });
-  final BaseResponse<List<Forecast>> baseResponse = BaseResponse.fromJsonArray(data, _parseForecastList);
-  if (baseResponse.success) {
-    baseResponse.updateTime = now;
-    _saveWeatherLocal(city, jsonEncode(baseResponse));
-    return baseResponse.data;
+  try {
+    final BaseResponse<List<Forecast>> baseResponse = BaseResponse.fromJsonArray(data, _parseForecastList);
+    if (baseResponse.success) {
+      baseResponse.updateTime = now;
+      _saveWeatherLocal(city, jsonEncode(baseResponse));
+      return baseResponse.data;
+    }
+  } catch (e){
+    // nothing
   }
-  throw HttpError(500, baseResponse.message ?? '位置服务端异常');
+  throw HttpError(500, data['message'] ?? '未知服务端异常');
 }
 
 Future<void> _saveWeatherLocal(String city, String json) async {
