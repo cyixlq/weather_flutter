@@ -2,6 +2,11 @@
 
 一个天气的Flutter项目
 
+## 效果预览
+| 首页                                 | 城市列表                               | 添加城市                              |
+| :---------------------------------: | :-----------------------------------: | :----------------------------------: |
+| ![首页](screenshots/首页.gif)         | ![城市列表](screenshots/城市列表.gif)   | ![添加城市](screenshots/添加城市.gif)   |
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
