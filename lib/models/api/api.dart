@@ -4,13 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weather_flutter/common/my_log.dart';
 import 'package:weather_flutter/models/api/http_error.dart';
 import 'package:weather_flutter/models/bean/base_response.dart';
-import 'package:weather_flutter/models/bean/weather.dart';
+import 'package:weather_flutter/models/bean/forecast.dart';
 import 'package:weather_flutter/models/api/net_client.dart';
 
 const _tag = 'API_TAG';
 
 /// *********** 天气API *************/
-Future<Weather> getWeather(String city, { bool isRefresh = false}) async {
+Future<List<Forecast>> getWeather(String city, { bool isRefresh = false}) async {
   final now = DateTime.now().millisecondsSinceEpoch;
   if (isRefresh) {
     // 是刷新的话直接返回网络数据，就不读取本地缓存了
@@ -22,19 +22,21 @@ Future<Weather> getWeather(String city, { bool isRefresh = false}) async {
     return _getWeatherNet(city, now);
   }
   // 缓存有效
-  return cache;
+  return cache.data;
 }
 
-Future<Weather> _getWeatherNet(String city, int now) async {
+Future<List<Forecast>> _getWeatherNet(String city, int now) async {
   final data = await NetClient().get('/api/weather', parameter: {
     'city': city,
     'type': 'week'
   });
-  final BaseResponse<Weather> baseResponse = BaseResponse.fromJson(data, Weather.fromJson);
-  final Weather weather = parse(baseResponse);
-  weather.updateTime = now;
-  _saveWeatherLocal(city, jsonEncode(weather));
-  return weather;
+  final BaseResponse<List<Forecast>> baseResponse = BaseResponse.fromJsonArray(data, _parseForecastList);
+  if (baseResponse.success) {
+    baseResponse.updateTime = now;
+    _saveWeatherLocal(city, jsonEncode(baseResponse));
+    return baseResponse.data;
+  }
+  throw HttpError(500, baseResponse.message ?? '位置服务端异常');
 }
 
 Future<void> _saveWeatherLocal(String city, String json) async {
@@ -49,11 +51,11 @@ Future<void> _removeWeatherLocal(String city) async {
   MyLog.i(_tag, 'remove weather data local $isSuccess');
 }
 
-Future<Weather?> _getWeatherLocal(String city) async {
+Future<BaseResponse<List<Forecast>>?> _getWeatherLocal(String city) async {
   final prefs = await SharedPreferences.getInstance();
   final json = prefs.getString(city);
   if (json != null) {
-    return Weather.fromJson(jsonDecode(json));
+    return BaseResponse.fromJsonArray(jsonDecode(json), _parseForecastList);
   }
   return null;
 }
@@ -108,4 +110,8 @@ Future<String?> getCurrentCity() async {
   final result = prefs.getString('current_city');
   MyLog.i(_tag, 'current_city: ' + result.toString());
   return result;
+}
+
+List<Forecast> _parseForecastList(List jsonArray) {
+  return jsonArray.map((e) => Forecast.fromJson(e)).toList();
 }

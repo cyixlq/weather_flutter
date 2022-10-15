@@ -40,11 +40,11 @@ class TemperatureChart extends StatelessWidget {
   }
 
   double _getHigh() {
-    return double.tryParse(highText.replaceAll('高温 ', '').replaceAll('℃', '')) ?? minT;
+    return double.tryParse(highText.replaceAll('最高 ', '').replaceAll('°C', '')) ?? minT;
   }
 
   double _getLow() {
-    return double.tryParse(lowText.replaceAll('低温 ', '').replaceAll('℃', '')) ?? minT;
+    return double.tryParse(lowText.replaceAll('最低 ', '').replaceAll('°C', '')) ?? minT;
   }
 
 }
