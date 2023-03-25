@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_flutter/common/config.dart';
 import 'package:weather_flutter/common/my_log.dart';
@@ -90,13 +91,13 @@ class _MainPageState extends State<MainPage> {
       itemCount: _weather?.length ?? 1,
       itemBuilder: (context, index) {
         if (index == 0) {
-          return WeatherToday(_weather?[index + 1]);
+          return WeatherToday(_weather?[index]);
         } else if (index == _weather!.length - 1) {
           return SizedBox(width: double.infinity, height: paddingBottom,);
         }
         return Column(children: [
           WeatherItem(
-            forecast: _weather![index + 1],
+            forecast: _weather![index],
           ),
           const Divider(color: Colors.white, thickness: 1)
         ]);
@@ -139,6 +140,8 @@ class _MainPageState extends State<MainPage> {
         final String msg;
         if (e is HttpError) {
           msg = e.msg;
+        } else if (e is DioError) {
+            msg = '网络异常';
         } else {
           msg = '未知异常: ${e.toString()}';
         }
